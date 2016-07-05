@@ -7,8 +7,8 @@ export const getCheckboxValue = e => {
 };
 
 export const getMultiSelectValue = e => {
-  var options = e.target.options;
-  var value = [];
+  const options = e.target.options;
+  const value = [];
 
   for (let i = 0, l = options.length; i < l; i++) {
     if (options[i].selected) {
@@ -25,7 +25,9 @@ export const getCheckboxGroupValue = (e, values, opts = {}) => {
   }
 
   if (values instanceof Array) {
-    if (values.includes(e.target.value) === false) {
+    values = [].concat(values);
+    // if (values.includes(e.target.value) === false) {
+    if (e.target.checked) {
       values.push(e.target.value);
     } else {
       const index = values.indexOf(e.target.value);
@@ -33,7 +35,10 @@ export const getCheckboxGroupValue = (e, values, opts = {}) => {
       values.splice(index, 1);
     }
   } else if (values instanceof Object) {
-    if (!values[e.target.value]) {
+    values = Object.assign({}, values);
+
+    // if (!values[e.target.value]) {
+    if (e.target.checked) {
       values[e.target.value] = true;
     } else {
       if (opts.deleteFalsy) {
