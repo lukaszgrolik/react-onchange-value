@@ -1,6 +1,6 @@
 {
   "name": "react-onchange-value",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "dist/react-onchange-value.min.js",
   "description": "Helpers for retrieving form fields' values in React",
   "keywords": [
