@@ -3,7 +3,7 @@ const React = require('react');
 const h = require('react-hyperscript');
 const TestUtils = require('react-addons-test-utils');
 
-const reactOnChangeValue = require('../dist/react-onchange-value');
+const reactOnChangeValue = require('../dist/react-onchange-value' + (process.env.NODE_ENV === 'production' ? '.min' : ''));
 
 const {getValue, getCheckboxValue, getCheckboxGroupValue, getMultiSelectValue} = reactOnChangeValue;
 
@@ -145,7 +145,115 @@ describe('getCheckboxGroupValue', () => {
     val.should.containDeepOrdered(['b', 'c']);
   });
 
-  it('gets checkbox group value as object');
+  it('gets checkbox group value as object', () => {
+    let val = {};
+    const comp = h('div', [
+      h('input', {
+        type: 'checkbox',
+        name: 'foo',
+        className: 'ch_a',
+        value: 'a',
+        onChange: e => {
+          val = getCheckboxGroupValue(e, val);
+        },
+      }),
+      h('input', {
+        type: 'checkbox',
+        name: 'foo',
+        className: 'ch_b',
+        value: 'b',
+        onChange: e => {
+          val = getCheckboxGroupValue(e, val);
+        },
+      }),
+      h('input', {
+        type: 'checkbox',
+        name: 'foo',
+        className: 'ch_c',
+        value: 'c',
+        onChange: e => {
+          val = getCheckboxGroupValue(e, val);
+        },
+      }),
+    ]);
+    const el = TestUtils.renderIntoDocument(comp);
 
-  it('gets checkbox group value as object without false values');
+    const ch1 = el.querySelector('.ch_a');
+    const ch2 = el.querySelector('.ch_b');
+    const ch3 = el.querySelector('.ch_c');
+
+    ch1.checked = true;
+    TestUtils.Simulate.change(ch1);
+
+    ch2.checked = true;
+    TestUtils.Simulate.change(ch2);
+
+    Object.keys(val).should.have.length(2);
+    val.should.have.properties({a: true, b: true});
+
+    ch1.checked = false;
+    TestUtils.Simulate.change(ch1);
+
+    ch3.checked = true;
+    TestUtils.Simulate.change(ch3);
+
+    Object.keys(val).should.have.length(3);
+    val.should.have.properties({a: false, b: true, c: true});
+  });
+
+  it('gets checkbox group value as object without falsy values', () => {
+    let val = {};
+    const comp = h('div', [
+      h('input', {
+        type: 'checkbox',
+        name: 'foo',
+        className: 'ch_a',
+        value: 'a',
+        onChange: e => {
+          val = getCheckboxGroupValue(e, val, {deleteFalsy: true});
+        },
+      }),
+      h('input', {
+        type: 'checkbox',
+        name: 'foo',
+        className: 'ch_b',
+        value: 'b',
+        onChange: e => {
+          val = getCheckboxGroupValue(e, val, {deleteFalsy: true});
+        },
+      }),
+      h('input', {
+        type: 'checkbox',
+        name: 'foo',
+        className: 'ch_c',
+        value: 'c',
+        onChange: e => {
+          val = getCheckboxGroupValue(e, val, {deleteFalsy: true});
+        },
+      }),
+    ]);
+    const el = TestUtils.renderIntoDocument(comp);
+
+    const ch1 = el.querySelector('.ch_a');
+    const ch2 = el.querySelector('.ch_b');
+    const ch3 = el.querySelector('.ch_c');
+
+    ch1.checked = true;
+    TestUtils.Simulate.change(ch1);
+
+    ch2.checked = true;
+    TestUtils.Simulate.change(ch2);
+
+    Object.keys(val).should.have.length(2);
+    val.should.have.properties({a: true, b: true});
+
+    ch1.checked = false;
+    TestUtils.Simulate.change(ch1);
+
+    ch3.checked = true;
+    TestUtils.Simulate.change(ch3);
+
+    Object.keys(val).should.have.length(2);
+    val.should.have.properties({b: true, c: true});
+  });
 });

@@ -1,32 +1,44 @@
-# getValue
+# react-onchange-value
+
+Helpers for retrieving form fields' values in React
+
+## #getValue(e)
 
 Helper function for retrieving `e.target.value`.
 
 ```js
 import {getValue} from 'react-onchange-value';
 
-{/* text input */}
-<input onChange={e => {
-  const value = getValue(e);
+// text input
+
+<input value={...} onChange={e => {
+  getValue(e);
+  // => *some string*
 }} />
 
-{/* radio group */}
-const onChange = e => {
-  const value = getValue(e);
+// radio group
+
+const handleChange = e => {
+  getValue(e);
+  // => "a" or "b"
 };
 
-<input type="radio" name="foo" value="a" onChange={onChange} />
-<input type="radio" name="foo" value="b" onChange={onChange} />
+<input type="radio" name="foo" value="a" onChange={handleChange} />
+<input type="radio" name="foo" value="b" onChange={handleChange} />
 
-{/* select (single) */}
+// select (single)
+
 <select onChange={e => {
-  const value = getValue(e);
+  getValue(e);
+  // => "a", "b" or "c"
 }}>
-  {/* ... */}
+  <option value="a">A</option>
+  <option value="b">B</option>
+  <option value="c">C</option>
 </select>
 ```
 
-# getCheckboxValue
+## #getCheckboxValue(e)
 
 Helper function for retrieving `e.target.checked`.
 
@@ -34,41 +46,56 @@ Helper function for retrieving `e.target.checked`.
 ```js
 import {getCheckboxValue} from 'react-onchange-value';
 
-{/* single checkbox */}
-<input type="checkbox" onChange={e => {
-  const value = getCheckboxValue(e);
+<input type="checkbox" checked={...} onChange={e => {
+  getCheckboxValue(e);
+  // => true or false
 }} />
 ```
 
-# getMultiSelectValue
+## #getMultiSelectValue(e)
 
 Retrieves array of selected options' values.
 
 ```js
 import {getMultiSelectValue} from 'react-onchange-value';
 
-{/* multi select */}
-<select multiple="true" onChange={e => {
-  const value = getMultiSelectValue(e);
+const multiSelectValue = ['a'];
+
+<select multiple="true" value={multiSelectValue} onChange={e => {
+  getMultiSelectValue(e);
+  // value examples:
+  // => []
+  // => ['a', 'b']
 }}>
-  {/* ... */}
+  <option value="a">A</option>
+  <option value="b">B</option>
+  <option value="c">C</option>
 </select>
 ```
 
-# getCheckboxGroupValue
+## #getCheckboxGroupValue(e, values, options)
 
-Retrieves array of checked checkboxes' values. Requires array containing values checked currently.
+Retrieves either array or object with checkboxes' values. Requires either array or object containing values checked currently:
+- if array given, it adds value if checkbox is checked and removes value if checkbox is unchecked
+- if object given, it adds `{[key]: true}` pair where key has the name of checked checkbox' value; if checkbox is unchecked, it either sets the value to false (default) or removes key-value pair (`deleteFalsy` option set to `true`)
 
 ```js
 import {getCheckboxGroupValue} from 'react-onchange-value';
 
-{/* checkbox group */}
-const checkboxGroupValue = [];
-const onChange = e => {
-  const value = getCheckboxGroupValue(e, checkboxGroupValue);
+const checkboxGroupValue = ['b'] // or {b: true};
+const handleChange = e => {
+  getCheckboxGroupValue(e, checkboxGroupValue);
+  // value examples if array given:
+  // => ['a', 'b']
+  // => []
+  // value examples if object given:
+  // => {b: true, a: true}
+  // => {} (if deleteFalsy=true)
+  // => {b: false}
+  // => {c: true} (if deleteFalsy=true)
 };
 
-<input type="checkbox" name="foo" value="a" onChange={onChange}>
-<input type="checkbox" name="foo" value="b" onChange={onChange}>
-<input type="checkbox" name="foo" value="c" onChange={onChange}>
+<input type="checkbox" name="foo" value="a" onChange={handleChange}>
+<input type="checkbox" name="foo" value="b" onChange={handleChange} checked="true">
+<input type="checkbox" name="foo" value="c" onChange={handleChange}>
 ```

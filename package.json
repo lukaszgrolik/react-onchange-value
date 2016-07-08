@@ -2,10 +2,28 @@
   "name": "react-onchange-value",
   "version": "0.0.0",
   "main": "dist/react-onchange-value.min.js",
+  "description": "Helpers for retrieving form fields' values in React",
+  "keywords": [
+    "react",
+    "form",
+    "field",
+    "onchange",
+    "value"
+  ],
+  "repository": "https://github.com/lukaszgrolik/react-onchange-value",
+  "homepage": "https://github.com/lukaszgrolik/react-onchange-value",
+  "bugs": "https://github.com/lukaszgrolik/react-onchange-value/issues",
+  "author": {
+    "name": "Łukasz Grolik",
+    "email": "lukasz@grolik.pl",
+    "url": "https://github.com/lukaszgrolik"
+  },
   "scripts": {
     "build": "WEBPACK_ENV=build webpack",
     "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
-    "test": "mocha --recursive --require ./test/setup.js"
+    "test": "mocha --recursive --require ./test/setup.js",
+    "test:build": "NODE_ENV=production npm run test",
+    "preversion": "npm run build && test:build"
   },
   "dependencies": {},
   "devDependencies": {
@@ -20,5 +38,6 @@
     "react-hyperscript": "^2.4.0",
     "should": "^9.0.2",
     "webpack": "^1.13.1"
-  }
+  },
+  "license": "MIT"
 }
